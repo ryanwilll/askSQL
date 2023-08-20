@@ -5,7 +5,7 @@ O objetivo principal deste projeto é simplesmente possibilitar a interação de
 
 Basta apenas informar o Schema da sua tabela / banco de dados e após isso ele poderá realizar as perguntas.
 
-Vale destacar que a aplicaçaõ utiliza uma API da OpenIA gratuita, o que pode gerar algumas lentidões.
+Vale destacar que a aplicação utiliza uma API da OpenIA gratuita, o que pode gerar algumas lentidões.
 
 ## Rodando os testes
 
@@ -17,9 +17,6 @@ Para rodar os testes, faça o seguinte:
 - Após realizar a configuração da KEY, basta rodar o projeto com `npm run dev | yarn dev | pnpm dev`
 
 ## Documentação da API
-
-#### Retorna todos os itens
-
 ```http
   GET /api/completion
 ```
@@ -29,11 +26,10 @@ Para rodar os testes, faça o seguinte:
 | `schema` | `string` | **Obrigatório**. Schema do banco de dados/tabela |
 | `input` | `string` | **Obrigatório**. Pergunta para a IA |
 
-
-
 ## Aprendizados
 
 Com este projeto, foi possível aprender muitas coisas, principalmente no que diz a respeito da IA, pois no mundo em que vivemos, cada dia é mais comum essa inteligência fazer parte do nosso cotidiano.
+
 ## Demonstração
 
 - [Visualizar o projeto](https://ask-sql.vercel.app/)
