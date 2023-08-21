@@ -17,7 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="icon" href="./favicon.ico" />
       </head>
-      <body className="bg-blueberry-900">{children}</body>
+      <body className="bg-blueberry-900 min-h-screen">{children}</body>
     </html>
   )
 }
