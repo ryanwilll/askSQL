@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useCompletion } from 'ai/react'
+import CreatableSelect from 'react-select/creatable'
 
 //* React Ace -> Textarea em código
 import AceEditor from 'react-ace'
@@ -20,8 +21,17 @@ import 'react-loading-skeleton/dist/skeleton.css'
 
 export default function Home() {
   const [schema, setSchema] = useState<string>('')
+  const [database, setDatabase] = useState<string | undefined>('')
   const [showResult, setShowResult] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(true)
+
+  const options = [
+    { value: 'Firebir', label: 'Firebird' },
+    { value: 'MySQL', label: 'MySQL' },
+    { value: 'MariaDB', label: 'MariaDB' },
+    { value: 'Oracle', label: 'Oracle' },
+    { value: 'SQL Server', label: 'SQL Server' },
+  ]
 
   const { completion, handleSubmit, input, handleInputChange } = useCompletion({
     api: './api/completion',
@@ -31,7 +41,9 @@ export default function Home() {
   })
 
   const clearFields = () => {
+    console.log(database)
     setSchema('')
+    setDatabase(undefined)
     setShowResult(false)
     const clearEvent = { target: { value: '' } } as React.ChangeEvent<HTMLInputElement>
     handleInputChange(clearEvent)
@@ -113,13 +125,47 @@ export default function Home() {
               <Skeleton height={160} className="my-4 rounded-md px-4 h-40 max-h-40 py-5 " />
             ) : (
               <textarea
-                className="my-4 resize-none bg-blueberry-600 border border-blueberry-300 rounded-md px-4 h-40 max-h-40 py-5 outline-none transition-all duration-300 focus:border-lime-300"
+                className="my-4 resize-none bg-blueberry-600 border border-blueberry-300 rounded-md px-4 h-40 max-h-40 py-5 outline-none transition-all duration-300 focus:border-[#2684FF] focus:border-2"
                 name="question"
                 id="question"
                 value={input}
                 onChange={handleInputChange}
               />
             )}
+            <CreatableSelect
+              className="mb-4"
+              styles={{
+                control: (baseStyles, state) => ({
+                  ...baseStyles,
+                  background: '#151A2A',
+                  border: '1px solid #323842',
+                  color: 'white',
+                }),
+                placeholder: (baseStyles, state) => ({
+                  ...baseStyles,
+                  color: 'gray', // Cor do placeholder
+                }),
+                singleValue: (baseStyles, state) => ({
+                  ...baseStyles,
+                  color: 'white', // Cor do valorz selecionado
+                }),
+              }}
+              theme={(theme) => ({
+                ...theme,
+                colors: {
+                  ...theme.colors,
+                  neutral0: '#151A2A',
+                  primary25: '#323842',
+                  primary50: '#323852',
+                },
+              })}
+              isClearable
+              isDisabled={isLoading}
+              isLoading={isLoading}
+              options={options}
+              defaultInputValue={database}
+              onChange={(prevValue) => setDatabase(prevValue?.value)}
+            />
 
             {isLoading ? (
               <Skeleton className="h-14" />
