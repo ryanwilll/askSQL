@@ -13,11 +13,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-br" className={`${inter.variable} ${ubuntuMono.variable}`}>
+    <html lang="pt-br" className={`${inter.variable} ${ubuntuMono.variable} bg-blueberry-900 min-h-screen h-[full] `}>
       <head>
         <link rel="icon" href="./favicon.ico" />
       </head>
-      <body className="bg-blueberry-900 min-h-screen">{children}</body>
+      <body>{children}</body>
     </html>
   )
 }
