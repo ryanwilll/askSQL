@@ -63,17 +63,6 @@ export default function Home() {
     handleInputChange(clearEvent)
   }
 
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false)
-    }, 200)
-  }, [])
-
-  useEffect(() => {
-    console.log(completion)
-    completion != '' && setShowResult(true)
-  }, [completion])
-
   const enviarFormulario = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -100,6 +89,16 @@ export default function Home() {
       setError(error.message)
     }
   }
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false)
+    }, 200)
+  }, [])
+
+  useEffect(() => {
+    completion != '' && setShowResult(true)
+  }, [completion])
 
   return (
     <>
