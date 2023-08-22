@@ -8,10 +8,10 @@ const openai = new OpenAI({
 })
 
 export async function POST(req: Request) {
-  const { schema, prompt } = await req.json()
+  const { schema, prompt, database } = await req.json()
 
   const message = `
-    O seu trabalho é criar queries em SQL a partir de um schema SQL abaixo.
+    O seu trabalho é criar queries em SQL a partir de um schema SQL abaixo para o SGBD """"${database}"""".
 
     Schema SQL:
     """
