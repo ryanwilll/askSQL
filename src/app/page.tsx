@@ -138,7 +138,7 @@ export default function Home() {
                 fontSize={15}
                 name="schema"
                 height="150px"
-                className=" my-4 h-full max-w-full bg-blueberry-600 border border-blueberry-300 rounded-md px-4 py-3 transition-all duration-300"
+                className="my-4 h-full max-w-full bg-blueberry-600 border border-blueberry-300 rounded-md px-4 py-3 transition-all duration-300"
                 showPrintMargin={true}
                 wrapEnabled={true}
                 showGutter={true}
@@ -172,8 +172,9 @@ export default function Home() {
                 onChange={handleInputChange}
               />
             )}
+            <span className="text-lg font-light">Qual o seu sistema SGBD?</span>
             <CreatableSelect
-              className="mb-4"
+              className="my-4 "
               styles={{
                 control: (baseStyles, state) => ({
                   ...baseStyles,
@@ -181,6 +182,7 @@ export default function Home() {
                   border: '1px solid #323842',
                   color: 'white',
                 }),
+
                 placeholder: (baseStyles, state) => ({
                   ...baseStyles,
                   color: 'gray', // Cor do placeholder
@@ -205,6 +207,7 @@ export default function Home() {
               options={options}
               onChange={(prevValue) => setDatabase(prevValue?.value)}
               value={database?.label}
+              maxMenuHeight={100}
             />
 
             {isLoading ? (
@@ -212,7 +215,7 @@ export default function Home() {
             ) : (
               <button
                 type="submit"
-                className="disabled:opacity-30 disabled:hover:bg-blueberry-900 disabled:cursor-not-allowed text-pistachio flex items-center justify-center rounded-lg border border-pistachio h-14 gap-2  hover:border-lime-200 hover:bg-blueberry-300 transition-colors duration-500">
+                className="mt-4 disabled:opacity-30 disabled:hover:bg-blueberry-900 disabled:cursor-not-allowed text-pistachio flex items-center justify-center rounded-lg border border-pistachio h-14 gap-2  hover:border-lime-200 hover:bg-blueberry-300 transition-colors duration-500">
                 <Stars className="w-6 h-6" />
                 Perguntar a inteligência artificial
               </button>
