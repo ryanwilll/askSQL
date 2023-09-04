@@ -35,7 +35,7 @@ Com este projeto, foi possível aprender muitas coisas, principalmente no que di
 - [Visualizar o projeto](https://ask-sql.vercel.app/)
 
 ![Imagem do Projeto](https://cdn.discordapp.com/attachments/970795622531760170/1142904825323987094/Projeto.png)
-![Imagem do Projeto versão desktop](https://cdn.discordapp.com/attachments/1036034786046775297/1148394989555023872/image.png)
+![Imagem do Projeto versão desktop](https://cdn.discordapp.com/attachments/1036034786046775297/1148395989317734410/image.png)
 
 ## Stack utilizada
 
