@@ -84,10 +84,12 @@ export default function Home() {
     }
 
     try {
+      setIsLoading(true)
       await handleSubmit(e)
     } catch (error: any | unknown) {
       setError(error.message)
     }
+    setIsLoading(false)
   }
 
   useEffect(() => {
@@ -103,7 +105,7 @@ export default function Home() {
   return (
     <>
       <SkeletonTheme baseColor="#202020" highlightColor="#444">
-        <div className="max-w-[430px] min-h-max px-4 mx-auto pt-12 pb-4">
+        <div className="max-w-[430px] min-h-max px-4 mx-auto pt-12 pb-8">
           <GlobalStyles
             styles={{
               '*::-webkit-scrollbar': {
@@ -121,7 +123,11 @@ export default function Home() {
           <header className="flex items-center justify-between">
             <Image src={logoImage} alt="Logotipo ask sql" />
             <button type="button">
-              <Trash2 onClick={clearFields} className="h-8 w-8 text-white" strokeWidth={0.8} />
+              <Trash2
+                onClick={clearFields}
+                className="h-12 w-12 rounded-md py-2 px-2 text-white  hover:bg-gray-800 hover:text-red-500 transition-all ease-in-out duration-300"
+                strokeWidth={0.8}
+              />
             </button>
           </header>
 
@@ -165,7 +171,7 @@ export default function Home() {
               <Skeleton height={160} className="my-4 rounded-md px-4 h-40 max-h-40 py-5 " />
             ) : (
               <textarea
-                className="my-4 resize-none bg-blueberry-600 border border-blueberry-300 rounded-md px-4 h-40 max-h-40 py-5 outline-none transition-all duration-300 focus:border-[#2684FF] focus:border-2"
+                className="my-4 resize-none bg-blueberry-600 border border-blueberry-300 rounded-md px-4 h-40 max-h-40 py-5 outline-none transition-all duration-300"
                 name="question"
                 id="question"
                 value={input}
@@ -174,7 +180,7 @@ export default function Home() {
             )}
             <span className="text-lg font-light">Qual o seu sistema SGBD?</span>
             <CreatableSelect
-              className="my-4 "
+              className="my-4"
               styles={{
                 control: (baseStyles, state) => ({
                   ...baseStyles,
@@ -207,7 +213,7 @@ export default function Home() {
               options={options}
               onChange={(prevValue) => setDatabase(prevValue?.value)}
               value={database?.label}
-              maxMenuHeight={100}
+              maxMenuHeight={150}
             />
 
             {isLoading ? (
