@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import OpenAI from 'openai'
 import { OpenAIStream, StreamingTextResponse } from 'ai'
 
