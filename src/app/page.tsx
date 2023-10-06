@@ -14,19 +14,21 @@ import 'ace-builds/src-noconflict/ext-language_tools'
 //* Estilização
 import GlobalStyles from '@mui/material/GlobalStyles'
 import logoImage from '../assets/logo.svg'
-import { Trash2, Stars } from 'lucide-react'
+import { Trash2, Stars, Github, GalleryVerticalEnd, Copy } from 'lucide-react'
 
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { Tooltip } from 'react-tooltip'
 
 export default function Home() {
   const [schema, setSchema] = useState<string>('')
   const [error, setError] = useState<string>('')
   const [database, setDatabase] = useState<any>([{}])
   const [showResult, setShowResult] = useState<boolean>(false)
+  const [tooltipText, setTooltipText] = useState('Copiar resposta');
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const formRef = useRef(null)
-  const underMaintenance = true
+  const underMaintenance = false
 
   const options = [
     { value: 'Firebird', label: 'Firebird' },
@@ -85,11 +87,20 @@ export default function Home() {
 
     try {
       setIsLoading(true)
-      await handleSubmit(e)
+      handleSubmit(e)
     } catch (error: any | unknown) {
       setError(error.message)
     }
     setIsLoading(false)
+  }
+
+  const copyResult = () => {
+    setTooltipText('✅ Copiado!');
+    navigator.clipboard.writeText(completion)
+
+    setTimeout(() => {
+      setTooltipText('Copiar resposta');
+    }, 4000); // Mudança após 4 segundos
   }
 
   useEffect(() => {
@@ -102,10 +113,24 @@ export default function Home() {
     completion != '' && setShowResult(true)
   }, [completion])
 
+  
   return (
     <>
       {!underMaintenance && (
         <SkeletonTheme baseColor="#202020" highlightColor="#444">
+          <aside className='flex flex-col justify-center gap-4 w-fit h-full fixed top-0 left-0'>
+          <a href="https://github.com/ryanwilll/" target='_blank' className='flex gap-1 text-white hover:bg-gray-800 py-2 px-2 rounded-md' 
+              data-tooltip-id="Github" data-tooltip-content="Github">
+            <Github />
+            <Tooltip id="Github" place='right-start' />
+
+          </a>
+          <a href="https://ryanwill.vercel.app" target='_blank' className='flex gap-1 text-white hover:bg-gray-800 py-2 px-2 rounded-md' 
+            data-tooltip-id="Portfolio" data-tooltip-content="Portfólio">
+            <GalleryVerticalEnd />          
+            <Tooltip id="Portfolio" place='right-start' />
+          </a>
+          </aside>
           <div className="max-w-[430px] min-h-max px-4 mx-auto pt-12 pb-8">
             <GlobalStyles
               styles={{
@@ -123,12 +148,14 @@ export default function Home() {
             />
             <header className="flex items-center justify-between">
               <Image src={logoImage} alt="Logotipo ask sql" />
-              <button type="button">
+              <button type="button" data-tooltip-id="clear" data-tooltip-content="Limpar campos">
                 <Trash2
                   onClick={clearFields}
                   className="h-12 w-12 rounded-md py-2 px-2 text-white  hover:bg-gray-800 hover:text-red-500 transition-all ease-in-out duration-300"
                   strokeWidth={0.8}
+                  
                 />
+                <Tooltip id="clear" place='right-start' />
               </button>
             </header>
 
@@ -230,18 +257,22 @@ export default function Home() {
               {error && <p className="text-center mt-2 text-red-600 font-bold">{error}</p>}
             </form>
 
-            {showResult && (
+            {/* {showResult && ( */}
               <>
                 <div>
-                  <span className="text-lg font-light text-foam">Resposta:</span>
+                  <span className="text-lg font-light text-foam relative">Resposta:
+                    <button onClick={copyResult} className='text-white absolute top-0 left-24'  data-tooltip-id="copy" data-tooltip-content={tooltipText} ><Copy /></button>
+                    <Tooltip id="copy" place='right-end' />
+                  </span>
+                 
                   <AceEditor
                     readOnly
                     mode="sql"
                     theme="dracula"
                     name="schema"
                     fontSize={15}
-                    height="100px"
-                    className=" my-4 h-full max-w-full font-mono bg-blueberry-600 border border-blueberry-300 rounded-md px-4 py-3 transition-all duration-300"
+                    height="150px"
+                    className="my-4 h-full max-w-full font-mono bg-blueberry-600 border border-blueberry-300 rounded-md px-4 py-3 transition-all duration-300"
                     showPrintMargin={true}
                     wrapEnabled={true}
                     showGutter={true}
@@ -259,10 +290,12 @@ export default function Home() {
                       tabSize: 2,
                     }}
                   />
+                  
                 </div>
               </>
-            )}
+            {/* )} */}
           </div>
+          <p className='text-center my-2 text-yellow-50'>Desenvolvido por <a href='#' className='underline'>Ryan Will Darós</a></p>
         </SkeletonTheme>
       )}
       {underMaintenance && (
