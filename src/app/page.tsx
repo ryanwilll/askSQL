@@ -14,7 +14,7 @@ import 'ace-builds/src-noconflict/ext-language_tools'
 //* Estilização
 import GlobalStyles from '@mui/material/GlobalStyles'
 import logoImage from '../assets/logo.svg'
-import { Trash2, Stars, Github, GalleryVerticalEnd, Copy } from 'lucide-react'
+import { Trash2, Stars, Github, GalleryVerticalEnd, Copy, BellPlus } from 'lucide-react'
 
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -25,10 +25,13 @@ export default function Home() {
   const [error, setError] = useState<string>('')
   const [database, setDatabase] = useState<any>([{}])
   const [showResult, setShowResult] = useState<boolean>(false)
-  const [tooltipText, setTooltipText] = useState('Copiar resposta');
+  const [tooltipText, setTooltipText] = useState('Copiar resposta')
   const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isTimeout, setIsTimeout] = useState<boolean>(false)
+  const [resIsLoading, setResIsLoading] = useState<boolean>(false)
+
   const formRef = useRef(null)
-  const underMaintenance = true
+  const underMaintenance = false
 
   const options = [
     { value: 'Firebird', label: 'Firebird' },
@@ -46,9 +49,18 @@ export default function Home() {
     { value: 'Informix', label: 'IBM Informix' },
     { value: 'Teradata', label: 'Teradata' },
     { value: 'InfluxDB', label: 'InfluxDB' },
+    { value: 'Amazon Aurora', label: 'Amazon Aurora' },
+    { value: 'Google Cloud Spanner', label: 'Google Cloud Spanner' },
+    { value: 'Neo4j', label: 'Neo4j' },
+    { value: 'Couchbase', label: 'Couchbase' },
+    { value: 'DynamoDB', label: 'DynamoDB' },
+    { value: 'Firebase Realtime Database', label: 'Firebase Realtime Database' },
+    { value: 'Microsoft Access', label: 'Microsoft Access' },
+    { value: 'Amazon Redshift', label: 'Amazon Redshift' },
+    { value: 'Snowflake', label: 'Snowflake' },
   ]
 
-  const {  completion, handleSubmit, input, handleInputChange } = useCompletion({
+  const { completion, handleSubmit, input, handleInputChange } = useCompletion({
     api: './api/completion',
     body: {
       schema,
@@ -70,7 +82,7 @@ export default function Home() {
 
     setError('')
 
-    if(underMaintenance ) {
+    if (underMaintenance) {
       return
     }
 
@@ -91,20 +103,27 @@ export default function Home() {
 
     try {
       setIsLoading(true)
+      setResIsLoading(true)
       handleSubmit(e)
     } catch (error: any | unknown) {
       setError(error.message)
     }
+
     setIsLoading(false)
+    setIsTimeout(true)
+
+    setTimeout(() => {
+      setIsTimeout(false)
+    }, 20000)
   }
 
   const copyResult = () => {
-    setTooltipText('✅ Copiado!');
+    setTooltipText('✅ Copiado!')
     navigator.clipboard.writeText(completion)
 
     setTimeout(() => {
-      setTooltipText('Copiar resposta');
-    }, 4000); // Mudança após 4 segundos
+      setTooltipText('Copiar resposta')
+    }, 4000) // Mudança após 4 segundos
   }
 
   useEffect(() => {
@@ -114,78 +133,219 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
+    setResIsLoading(false)
     completion != '' && setShowResult(true)
   }, [completion])
 
-  
   return (
     <>
-
-        <SkeletonTheme baseColor="#202020" highlightColor="#444">
-          <aside className='flex flex-col justify-center gap-4 w-fit h-full fixed top-0 left-0'>
-          <a href="https://github.com/ryanwilll/" target='_blank' className='flex gap-1 text-white hover:bg-gray-800 py-2 px-2 rounded-md' 
-              data-tooltip-id="Github" data-tooltip-content="Github">
+      <SkeletonTheme baseColor="#202020" highlightColor="#444">
+        <aside className="flex flex-col justify-center gap-4 w-fit h-full fixed top-0 left-2">
+          <span
+            className="absolute top-4 text-red-500 cursor-pointer hover:bg-gray-800 py-2 px-2 rounded-md"
+            data-tooltip-id="news"
+            data-tooltip-variant="info">
+            <Tooltip id="news">
+              <div>
+                <h3 className="font-bold">O que há de novo?</h3>
+                <br />
+                <ul className="list-decimal ml-4">
+                  <li>Nova integração com o GPT-4 (paga 😢)</li>
+                  <li>Adicionado novo botão para copiar a resposta</li>
+                  <li>Adicionado alguns Tooltips descritivos</li>
+                  <li>Ajustes para mostrar loading da resposta</li>
+                  <li>Definido timeout de 20s para cada pergunta</li>
+                  <li>Adicionado mais 9 tipos de bancos de dados</li>
+                  <li>Incluso os créditos e direcionamentos para o portfólio e github</li>
+                </ul>
+              </div>
+            </Tooltip>
+            <BellPlus />
+          </span>
+          <a
+            href="https://github.com/ryanwilll/"
+            target="_blank"
+            className="flex gap-1 text-white hover:bg-gray-800 py-2 px-2 rounded-md"
+            data-tooltip-id="Github"
+            data-tooltip-content="Github">
             <Github />
-            <Tooltip id="Github" place='right-start' />
+            <Tooltip id="Github" place="right-start" />
+          </a>
+          <a
+            href="https://ryanwill.vercel.app"
+            target="_blank"
+            className="flex gap-1 text-white hover:bg-gray-800 py-2 px-2 rounded-md"
+            data-tooltip-id="Portfolio"
+            data-tooltip-content="Portfólio">
+            <GalleryVerticalEnd />
+            <Tooltip id="Portfolio" place="right-start" />
+          </a>
+        </aside>
+        <div className="max-w-[430px] min-h-max px-4 mx-auto pt-12 pb-8">
+          <GlobalStyles
+            styles={{
+              '*::-webkit-scrollbar': {
+                width: '.4em',
+              },
+              '*::-webkit-scrollbar-track': {
+                '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)',
+              },
+              '*::-webkit-scrollbar-thumb': {
+                backgroundColor: 'rgba(0,0,0,.1)',
+                outline: '1px solid slategrey',
+              },
+            }}
+          />
+          <header className="flex items-center justify-between">
+            <Image src={logoImage} alt="Logotipo ask sql" />
+            <button type="button" data-tooltip-id="clear" data-tooltip-content="Limpar campos">
+              <Trash2
+                onClick={clearFields}
+                className="h-12 w-12 rounded-md py-2 px-2 text-white  hover:bg-gray-800 hover:text-red-500 transition-all ease-in-out duration-300"
+                strokeWidth={0.8}
+              />
+              <Tooltip id="clear" place="right-start" />
+            </button>
+          </header>
 
-          </a>
-          <a href="https://ryanwill.vercel.app" target='_blank' className='flex gap-1 text-white hover:bg-gray-800 py-2 px-2 rounded-md' 
-            data-tooltip-id="Portfolio" data-tooltip-content="Portfólio">
-            <GalleryVerticalEnd />          
-            <Tooltip id="Portfolio" place='right-start' />
-          </a>
-          </aside>
-          <div className="max-w-[430px] min-h-max px-4 mx-auto pt-12 pb-8">
-            <GlobalStyles
+          <form ref={formRef} id="form" name="form" onSubmit={enviarFormulario} className="py-8 w-full flex flex-col text-foam">
+            <label className="text-lg font-light" htmlFor="schema">
+              Cole a schema da(s) sua(s) tabela(s) aqui:
+            </label>
+            {isLoading ? (
+              <Skeleton height={150} className="my-4 h-full max-w-full" />
+            ) : (
+              <AceEditor
+                mode="sql"
+                theme="dracula"
+                fontSize={15}
+                name="schema"
+                height="150px"
+                className="my-4 h-full max-w-full bg-blueberry-600 border border-blueberry-300 rounded-md px-4 py-3 transition-all duration-300"
+                showPrintMargin={true}
+                wrapEnabled={true}
+                showGutter={true}
+                onChange={(schema) => setSchema(schema)}
+                highlightActiveLine={false}
+                value={schema}
+                style={{
+                  fontFamily: '"Fira code", "Fira Mono", monospace',
+                }}
+                setOptions={{
+                  enableBasicAutocompletion: false,
+                  enableLiveAutocompletion: false,
+                  enableSnippets: false,
+                  showLineNumbers: true,
+                  tabSize: 2,
+                }}
+              />
+            )}
+            <label className="text-lg font-light" htmlFor="question">
+              Faça uma pergunta sobre a sua schema:
+            </label>
+
+            {isLoading ? (
+              <Skeleton height={160} className="my-4 rounded-md px-4 h-40 max-h-40 py-5 " />
+            ) : (
+              <textarea
+                className="my-4 resize-none bg-blueberry-600 border border-blueberry-300 rounded-md px-4 h-40 max-h-40 py-5 outline-none transition-all duration-300"
+                name="question"
+                id="question"
+                value={input}
+                onChange={handleInputChange}
+              />
+            )}
+            <span className="text-lg font-light">Qual o seu sistema SGBD?</span>
+            <CreatableSelect
+              className="my-4"
               styles={{
-                '*::-webkit-scrollbar': {
-                  width: '.4em',
-                },
-                '*::-webkit-scrollbar-track': {
-                  '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)',
-                },
-                '*::-webkit-scrollbar-thumb': {
-                  backgroundColor: 'rgba(0,0,0,.1)',
-                  outline: '1px solid slategrey',
-                },
-              }}
-            />
-            <header className="flex items-center justify-between">
-              <Image src={logoImage} alt="Logotipo ask sql" />
-              <button type="button" data-tooltip-id="clear" data-tooltip-content="Limpar campos">
-                <Trash2
-                  onClick={clearFields}
-                  className="h-12 w-12 rounded-md py-2 px-2 text-white  hover:bg-gray-800 hover:text-red-500 transition-all ease-in-out duration-300"
-                  strokeWidth={0.8}
-                  
-                />
-                <Tooltip id="clear" place='right-start' />
-              </button>
-            </header>
+                control: (baseStyles, state) => ({
+                  ...baseStyles,
+                  background: '#151A2A',
+                  border: '1px solid #323842',
+                  color: 'white',
+                }),
 
-            <form ref={formRef} id="form" name="form" onSubmit={enviarFormulario} className="py-8 w-full flex flex-col text-foam">
-              <label className="text-lg font-light" htmlFor="schema">
-                Cole a schema da(s) sua(s) tabela(s) aqui:
-              </label>
-              {isLoading ? (
-                <Skeleton height={150} className="my-4 h-full max-w-full" />
-              ) : (
+                placeholder: (baseStyles, state) => ({
+                  ...baseStyles,
+                  color: 'gray', // Cor do placeholder
+                }),
+                singleValue: (baseStyles, state) => ({
+                  ...baseStyles,
+                  color: 'white', // Cor do valorz selecionado
+                }),
+              }}
+              theme={(theme) => ({
+                ...theme,
+                colors: {
+                  ...theme.colors,
+                  neutral0: '#151A2A',
+                  primary25: '#323842',
+                  primary50: '#323852',
+                },
+              })}
+              isClearable
+              isDisabled={isLoading}
+              isLoading={isLoading}
+              options={options}
+              onChange={(prevValue) => setDatabase(prevValue?.value)}
+              value={database?.label}
+              maxMenuHeight={150}
+            />
+
+            {isLoading ? (
+              <Skeleton className="h-14" />
+            ) : (
+              <>
+                <button
+                  disabled={underMaintenance || isTimeout}
+                  type="submit"
+                  className="mt-4 disabled:opacity-30 disabled:hover:bg-blueberry-900 disabled:cursor-not-allowed text-pistachio flex items-center justify-center rounded-lg border border-pistachio h-14 gap-2  hover:border-lime-200 hover:bg-blueberry-300 transition-colors duration-500">
+                  <Stars className="w-6 h-6" />
+                  Perguntar a inteligência artificial
+                </button>
+                {isTimeout && <p className="text-center mt-2 text-white">Aguarde alguns segundos para perguntar novamente.</p>}
+                {underMaintenance && <p className="text-center mt-2 text-red-600">Estamos em manutenção, por favor aguarde.</p>}
+              </>
+            )}
+            {error && <p className="text-center mt-2 text-red-600 font-bold">{error}</p>}
+          </form>
+
+          {resIsLoading && <Skeleton height={150} className="my-4 h-full max-w-full" />}
+
+          {showResult && (
+            <>
+              <div>
+                <span className="text-lg font-light text-foam relative">
+                  Resposta:
+                  <button
+                    onClick={copyResult}
+                    className="text-white absolute top-0 left-24"
+                    data-tooltip-id="copy"
+                    data-tooltip-variant={tooltipText.includes('Copiar') ? 'dark' : 'success'}
+                    data-tooltip-content={tooltipText}>
+                    <Copy />
+                  </button>
+                  <Tooltip id="copy" place="right-end" />
+                </span>
+
                 <AceEditor
+                  readOnly
                   mode="sql"
                   theme="dracula"
-                  fontSize={15}
                   name="schema"
+                  fontSize={15}
                   height="150px"
-                  className="my-4 h-full max-w-full bg-blueberry-600 border border-blueberry-300 rounded-md px-4 py-3 transition-all duration-300"
+                  className="my-4 h-full max-w-full font-mono bg-blueberry-600 border border-blueberry-300 rounded-md px-4 py-3 transition-all duration-300"
                   showPrintMargin={true}
                   wrapEnabled={true}
                   showGutter={true}
-                  onChange={(schema) => setSchema(schema)}
-                  highlightActiveLine={false}
-                  value={schema}
                   style={{
                     fontFamily: '"Fira code", "Fira Mono", monospace',
                   }}
+                  onChange={(schema) => setSchema(schema)}
+                  highlightActiveLine={false}
+                  value={completion}
                   setOptions={{
                     enableBasicAutocompletion: false,
                     enableLiveAutocompletion: false,
@@ -194,122 +354,20 @@ export default function Home() {
                     tabSize: 2,
                   }}
                 />
-              )}
-              <label className="text-lg font-light" htmlFor="question">
-                Faça uma pergunta sobre a sua schema:
-              </label>
-
-              {isLoading ? (
-                <Skeleton height={160} className="my-4 rounded-md px-4 h-40 max-h-40 py-5 " />
-              ) : (
-                <textarea
-                  className="my-4 resize-none bg-blueberry-600 border border-blueberry-300 rounded-md px-4 h-40 max-h-40 py-5 outline-none transition-all duration-300"
-                  name="question"
-                  id="question"
-                  value={input}
-                  onChange={handleInputChange}
-                />
-              )}
-              <span className="text-lg font-light">Qual o seu sistema SGBD?</span>
-              <CreatableSelect
-                className="my-4"
-                styles={{
-                  control: (baseStyles, state) => ({
-                    ...baseStyles,
-                    background: '#151A2A',
-                    border: '1px solid #323842',
-                    color: 'white',
-                  }),
-
-                  placeholder: (baseStyles, state) => ({
-                    ...baseStyles,
-                    color: 'gray', // Cor do placeholder
-                  }),
-                  singleValue: (baseStyles, state) => ({
-                    ...baseStyles,
-                    color: 'white', // Cor do valorz selecionado
-                  }),
-                }}
-                theme={(theme) => ({
-                  ...theme,
-                  colors: {
-                    ...theme.colors,
-                    neutral0: '#151A2A',
-                    primary25: '#323842',
-                    primary50: '#323852',
-                  },
-                })}
-                isClearable
-                isDisabled={isLoading}
-                isLoading={isLoading}
-                options={options}
-                onChange={(prevValue) => setDatabase(prevValue?.value)}
-                value={database?.label}
-                maxMenuHeight={150}
-              />
-
-              {isLoading ? (
-                <Skeleton className="h-14" />
-              ) : (
-                <>
-                
-                <button
-                  disabled={underMaintenance}
-                  type="submit"
-                  className="mt-4 disabled:opacity-30 disabled:hover:bg-blueberry-900 disabled:cursor-not-allowed text-pistachio flex items-center justify-center rounded-lg border border-pistachio h-14 gap-2  hover:border-lime-200 hover:bg-blueberry-300 transition-colors duration-500">
-                  <Stars className="w-6 h-6" />
-                  Perguntar a inteligência artificial
-                </button>
-               {
-                underMaintenance && (
-                  <p className='text-center mt-2 text-red-600'>Estamos em manutenção, por favor aguarde.</p>
-                )
-               }
-                </>
-              )}
-              {error && <p className="text-center mt-2 text-red-600 font-bold">{error}</p>}
-            </form>
-
-            {showResult && (
-              <>
-                <div>
-                  <span className="text-lg font-light text-foam relative">Resposta:
-                    <button onClick={copyResult} className='text-white absolute top-0 left-24'  data-tooltip-id="copy" data-tooltip-content={tooltipText} ><Copy /></button>
-                    <Tooltip id="copy" place='right-end' />
-                  </span>
-                 
-                  <AceEditor
-                    readOnly
-                    mode="sql"
-                    theme="dracula"
-                    name="schema"
-                    fontSize={15}
-                    height="150px"
-                    className="my-4 h-full max-w-full font-mono bg-blueberry-600 border border-blueberry-300 rounded-md px-4 py-3 transition-all duration-300"
-                    showPrintMargin={true}
-                    wrapEnabled={true}
-                    showGutter={true}
-                    style={{
-                      fontFamily: '"Fira code", "Fira Mono", monospace',
-                    }}
-                    onChange={(schema) => setSchema(schema)}
-                    highlightActiveLine={false}
-                    value={completion}
-                    setOptions={{
-                      enableBasicAutocompletion: false,
-                      enableLiveAutocompletion: false,
-                      enableSnippets: false,
-                      showLineNumbers: true,
-                      tabSize: 2,
-                    }}
-                  />
-                  
-                </div>
-              </>
-            )} 
-          </div>
-          <p className='text-center my-2 text-yellow-50'>Desenvolvido por <a href="https://ryanwill.vercel.app" target='_blank' className='underline'>Ryan Will Darós</a></p>
-        </SkeletonTheme>
+              </div>
+            </>
+          )}
+        </div>
+        <p className="text-center text-yellow-50 pb-4">
+          Desenvolvido por {''}
+          <a
+            href="https://ryanwill.vercel.app"
+            target="_blank"
+            className="underline hover:text-green-400 transition-colors duration-300">
+            Ryan Will Darós
+          </a>
+        </p>
+      </SkeletonTheme>
     </>
   )
 }
