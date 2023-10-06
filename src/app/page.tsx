@@ -28,7 +28,7 @@ export default function Home() {
   const [tooltipText, setTooltipText] = useState('Copiar resposta');
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const formRef = useRef(null)
-  const underMaintenance = false
+  const underMaintenance = true
 
   const options = [
     { value: 'Firebird', label: 'Firebird' },
@@ -48,7 +48,7 @@ export default function Home() {
     { value: 'InfluxDB', label: 'InfluxDB' },
   ]
 
-  const { completion, handleSubmit, input, handleInputChange } = useCompletion({
+  const {  completion, handleSubmit, input, handleInputChange } = useCompletion({
     api: './api/completion',
     body: {
       schema,
@@ -69,6 +69,10 @@ export default function Home() {
     e.preventDefault()
 
     setError('')
+
+    if(underMaintenance ) {
+      return
+    }
 
     if (schema.length <= 0) {
       setError('Você precisa precisa informar sua schema')
@@ -116,7 +120,7 @@ export default function Home() {
   
   return (
     <>
-      {!underMaintenance && (
+
         <SkeletonTheme baseColor="#202020" highlightColor="#444">
           <aside className='flex flex-col justify-center gap-4 w-fit h-full fixed top-0 left-0'>
           <a href="https://github.com/ryanwilll/" target='_blank' className='flex gap-1 text-white hover:bg-gray-800 py-2 px-2 rounded-md' 
@@ -161,7 +165,7 @@ export default function Home() {
 
             <form ref={formRef} id="form" name="form" onSubmit={enviarFormulario} className="py-8 w-full flex flex-col text-foam">
               <label className="text-lg font-light" htmlFor="schema">
-                Cole a schema da sua tabela / Banco de dados SQL aqui:
+                Cole a schema da(s) sua(s) tabela(s) aqui:
               </label>
               {isLoading ? (
                 <Skeleton height={150} className="my-4 h-full max-w-full" />
@@ -192,7 +196,7 @@ export default function Home() {
                 />
               )}
               <label className="text-lg font-light" htmlFor="question">
-                Faça uma pergunta sobre o código:
+                Faça uma pergunta sobre a sua schema:
               </label>
 
               {isLoading ? (
@@ -247,17 +251,26 @@ export default function Home() {
               {isLoading ? (
                 <Skeleton className="h-14" />
               ) : (
+                <>
+                
                 <button
+                  disabled={underMaintenance}
                   type="submit"
                   className="mt-4 disabled:opacity-30 disabled:hover:bg-blueberry-900 disabled:cursor-not-allowed text-pistachio flex items-center justify-center rounded-lg border border-pistachio h-14 gap-2  hover:border-lime-200 hover:bg-blueberry-300 transition-colors duration-500">
                   <Stars className="w-6 h-6" />
                   Perguntar a inteligência artificial
                 </button>
+               {
+                underMaintenance && (
+                  <p className='text-center mt-2 text-red-600'>Estamos em manutenção, por favor aguarde.</p>
+                )
+               }
+                </>
               )}
               {error && <p className="text-center mt-2 text-red-600 font-bold">{error}</p>}
             </form>
 
-            {/* {showResult && ( */}
+            {showResult && (
               <>
                 <div>
                   <span className="text-lg font-light text-foam relative">Resposta:
@@ -293,23 +306,10 @@ export default function Home() {
                   
                 </div>
               </>
-            {/* )} */}
+            )} 
           </div>
-          <p className='text-center my-2 text-yellow-50'>Desenvolvido por <a href='#' className='underline'>Ryan Will Darós</a></p>
+          <p className='text-center my-2 text-yellow-50'>Desenvolvido por <a href="https://ryanwill.vercel.app" target='_blank' className='underline'>Ryan Will Darós</a></p>
         </SkeletonTheme>
-      )}
-      {underMaintenance && (
-        <>
-          <div className="flex flex-col justify-center items-center h-screen">
-            <h2 className="text-2xl mt-5 font-light text-red-500 text-center">Ops, site indisponível no momento!</h2>
-            <p className="text-white text-center mt-2 w-[80vw]">
-              Estamos passando por uma fase de manutenção em nosso site ASK SQL, que inclui a integração com o CHATGPT.
-              Infelizmente, não temos uma previsão exata para a conclusão dos trabalhos. Agradecemos a sua compreensão e paciência
-              neste momento
-            </p>
-          </div>
-        </>
-      )}
     </>
   )
 }
