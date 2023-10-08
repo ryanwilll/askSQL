@@ -8,6 +8,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        smallTablet: { max: '500px' },
+      },
+
       scrollbar: ['dark'],
       fontFamily: {
         sans: ['var(--font-inter)'],
