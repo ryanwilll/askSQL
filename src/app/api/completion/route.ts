@@ -9,6 +9,7 @@ const openai = new OpenAI({
 
 export async function POST(req: Request) {
   const { schema, prompt, database } = await req.json()
+
   const message = `
   Você forneceu um schema SQL para o SGBD "${database}".
   Aqui está o schema SQL que você forneceu:
