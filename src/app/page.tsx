@@ -3,18 +3,17 @@
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { useCompletion } from 'ai/react'
-import CreatableSelect from 'react-select/creatable'
 
-//* React Ace -> Textarea em código
-import AceEditor from 'react-ace'
-import 'ace-builds/src-noconflict/mode-sql'
-import 'ace-builds/src-noconflict/theme-dracula'
-import 'ace-builds/src-noconflict/ext-language_tools'
+//* Componentes
+import Modal from './components/Modal'
+import Navbar from './components/Navbar'
+import Select from './components/Select'
+import EditorCode from './components/EditorCode'
 
 //* Estilização
 import GlobalStyles from '@mui/material/GlobalStyles'
 import logoImage from '../assets/logo.svg'
-import { Trash2, Stars, Github, GalleryVerticalEnd, Copy, BellPlus } from 'lucide-react'
+import { Trash2, Stars, Copy } from 'lucide-react'
 
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -23,42 +22,17 @@ import { Tooltip } from 'react-tooltip'
 export default function Home() {
   const [schema, setSchema] = useState<string>('')
   const [error, setError] = useState<string>('')
-  const [database, setDatabase] = useState<any>([{}])
+  const [database, setDatabase] = useState<any>('')
   const [showResult, setShowResult] = useState<boolean>(false)
   const [tooltipText, setTooltipText] = useState('Copiar resposta')
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [isTimeout, setIsTimeout] = useState<boolean>(false)
   const [resIsLoading, setResIsLoading] = useState<boolean>(false)
 
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false)
+
   const formRef = useRef(null)
   const underMaintenance = false
-
-  const options = [
-    { value: 'Firebird', label: 'Firebird' },
-    { value: 'MySQL', label: 'MySQL' },
-    { value: 'MariaDB', label: 'MariaDB' },
-    { value: 'Oracle', label: 'Oracle' },
-    { value: 'SQL Server', label: 'SQL Server' },
-    { value: 'PostgreSQL', label: 'PostgreSQL' },
-    { value: 'SQLite', label: 'SQLite' },
-    { value: 'MongoDB', label: 'MongoDB' },
-    { value: 'Cassandra', label: 'Cassandra' },
-    { value: 'Redis', label: 'Redis' },
-    { value: 'DB2', label: 'IBM DB2' },
-    { value: 'Sybase', label: 'Sybase' },
-    { value: 'Informix', label: 'IBM Informix' },
-    { value: 'Teradata', label: 'Teradata' },
-    { value: 'InfluxDB', label: 'InfluxDB' },
-    { value: 'Amazon Aurora', label: 'Amazon Aurora' },
-    { value: 'Google Cloud Spanner', label: 'Google Cloud Spanner' },
-    { value: 'Neo4j', label: 'Neo4j' },
-    { value: 'Couchbase', label: 'Couchbase' },
-    { value: 'DynamoDB', label: 'DynamoDB' },
-    { value: 'Firebase Realtime Database', label: 'Firebase Realtime Database' },
-    { value: 'Microsoft Access', label: 'Microsoft Access' },
-    { value: 'Amazon Redshift', label: 'Amazon Redshift' },
-    { value: 'Snowflake', label: 'Snowflake' },
-  ]
 
   const { completion, handleSubmit, input, handleInputChange } = useCompletion({
     api: './api/completion',
@@ -71,7 +45,7 @@ export default function Home() {
   const clearFields = () => {
     setSchema('')
     setError('')
-    setDatabase({ value: '', label: '' })
+    setDatabase({ label: '' })
     setShowResult(false)
     const clearEvent = { target: { value: '' } } as React.ChangeEvent<HTMLInputElement>
     handleInputChange(clearEvent)
@@ -96,8 +70,11 @@ export default function Home() {
       return
     }
 
-    if (database?.length <= 1) {
-      setError('Você precisa precisa selecionar o tipo do seu SGBD')
+    console.log(database)
+
+    if (!database || database.length <= 0 || !database[0]) {
+      console.log('entrei')
+      setError('Você precisa selecionar o tipo do seu SGBD')
       return
     }
 
@@ -123,7 +100,11 @@ export default function Home() {
 
     setTimeout(() => {
       setTooltipText('Copiar resposta')
-    }, 4000) // Mudança após 4 segundos
+    }, 4000)
+  }
+
+  const openModal = () => {
+    setModalIsOpen(true)
   }
 
   useEffect(() => {
@@ -139,48 +120,9 @@ export default function Home() {
 
   return (
     <>
+      <Modal isOpen={modalIsOpen} setIsOpen={setModalIsOpen} />
+
       <SkeletonTheme baseColor="#202020" highlightColor="#444">
-        <aside className="flex flex-col justify-center gap-4 w-fit h-full fixed top-0 left-2">
-          <span
-            className="absolute top-4 text-red-500 cursor-pointer hover:bg-gray-800 py-2 px-2 rounded-md"
-            data-tooltip-id="news"
-            data-tooltip-variant="info">
-            <Tooltip id="news">
-              <div>
-                <h3 className="font-bold">O que há de novo?</h3>
-                <br />
-                <ul className="list-decimal ml-4">
-                  <li>Nova integração com o GPT-4 (paga 😢)</li>
-                  <li>Adicionado novo botão para copiar a resposta</li>
-                  <li>Adicionado alguns Tooltips descritivos</li>
-                  <li>Ajustes para mostrar loading da resposta</li>
-                  <li>Definido timeout de 20s para cada pergunta</li>
-                  <li>Adicionado mais 9 tipos de bancos de dados</li>
-                  <li>Incluso os créditos e direcionamentos para o portfólio e github</li>
-                </ul>
-              </div>
-            </Tooltip>
-            <BellPlus />
-          </span>
-          <a
-            href="https://github.com/ryanwilll/"
-            target="_blank"
-            className="flex gap-1 text-white hover:bg-gray-800 py-2 px-2 rounded-md"
-            data-tooltip-id="Github"
-            data-tooltip-content="Github">
-            <Github />
-            <Tooltip id="Github" place="right-start" />
-          </a>
-          <a
-            href="https://ryanwill.vercel.app"
-            target="_blank"
-            className="flex gap-1 text-white hover:bg-gray-800 py-2 px-2 rounded-md"
-            data-tooltip-id="Portfolio"
-            data-tooltip-content="Portfólio">
-            <GalleryVerticalEnd />
-            <Tooltip id="Portfolio" place="right-start" />
-          </a>
-        </aside>
         <div className="max-w-[430px] min-h-max px-4 mx-auto pt-12 pb-8">
           <GlobalStyles
             styles={{
@@ -201,12 +143,15 @@ export default function Home() {
             <button type="button" data-tooltip-id="clear" data-tooltip-content="Limpar campos">
               <Trash2
                 onClick={clearFields}
-                className="h-12 w-12 rounded-md py-2 px-2 text-white  hover:bg-gray-800 hover:text-red-500 transition-all ease-in-out duration-300"
+                className="h-12 w-12 rounded-md py-2 px-2 text-white hover:bg-gray-800 hover:text-red-500 
+                           transition-all ease-in-out duration-300"
                 strokeWidth={0.8}
               />
               <Tooltip id="clear" place="right-start" />
             </button>
           </header>
+
+          <Navbar openModal={openModal} />
 
           <form ref={formRef} id="form" name="form" onSubmit={enviarFormulario} className="py-8 w-full flex flex-col text-foam">
             <label className="text-lg font-light" htmlFor="schema">
@@ -215,30 +160,7 @@ export default function Home() {
             {isLoading ? (
               <Skeleton height={150} className="my-4 h-full max-w-full" />
             ) : (
-              <AceEditor
-                mode="sql"
-                theme="dracula"
-                fontSize={15}
-                name="schema"
-                height="150px"
-                className="my-4 h-full max-w-full bg-blueberry-600 border border-blueberry-300 rounded-md px-4 py-3 transition-all duration-300"
-                showPrintMargin={true}
-                wrapEnabled={true}
-                showGutter={true}
-                onChange={(schema) => setSchema(schema)}
-                highlightActiveLine={false}
-                value={schema}
-                style={{
-                  fontFamily: '"Fira code", "Fira Mono", monospace',
-                }}
-                setOptions={{
-                  enableBasicAutocompletion: false,
-                  enableLiveAutocompletion: false,
-                  enableSnippets: false,
-                  showLineNumbers: true,
-                  tabSize: 2,
-                }}
-              />
+              <EditorCode name="schema" value={schema} setSchema={setSchema} />
             )}
             <label className="text-lg font-light" htmlFor="question">
               Faça uma pergunta sobre a sua schema:
@@ -255,43 +177,9 @@ export default function Home() {
                 onChange={handleInputChange}
               />
             )}
-            <span className="text-lg font-light">Qual o seu sistema SGBD?</span>
-            <CreatableSelect
-              className="my-4"
-              styles={{
-                control: (baseStyles, state) => ({
-                  ...baseStyles,
-                  background: '#151A2A',
-                  border: '1px solid #323842',
-                  color: 'white',
-                }),
 
-                placeholder: (baseStyles, state) => ({
-                  ...baseStyles,
-                  color: 'gray', // Cor do placeholder
-                }),
-                singleValue: (baseStyles, state) => ({
-                  ...baseStyles,
-                  color: 'white', // Cor do valorz selecionado
-                }),
-              }}
-              theme={(theme) => ({
-                ...theme,
-                colors: {
-                  ...theme.colors,
-                  neutral0: '#151A2A',
-                  primary25: '#323842',
-                  primary50: '#323852',
-                },
-              })}
-              isClearable
-              isDisabled={isLoading}
-              isLoading={isLoading}
-              options={options}
-              onChange={(prevValue) => setDatabase(prevValue?.value)}
-              value={database?.label}
-              maxMenuHeight={150}
-            />
+            <label className="text-lg font-light">Qual o seu sistema SGBD?</label>
+            <Select isLoading={isLoading} database={database} setDatabase={setDatabase} />
 
             {isLoading ? (
               <Skeleton className="h-14" />
@@ -300,7 +188,9 @@ export default function Home() {
                 <button
                   disabled={underMaintenance || isTimeout}
                   type="submit"
-                  className="mt-4 disabled:opacity-30 disabled:hover:bg-blueberry-900 disabled:cursor-not-allowed text-pistachio flex items-center justify-center rounded-lg border border-pistachio h-14 gap-2  hover:border-lime-200 hover:bg-blueberry-300 transition-colors duration-500">
+                  className="mt-4 disabled:opacity-30 disabled:hover:bg-blueberry-900 disabled:cursor-not-allowed 
+                  text-pistachio flex items-center justify-center rounded-lg border border-pistachio h-14 gap-2  
+                  hover:border-lime-200 hover:bg-blueberry-300 transition-colors duration-500">
                   <Stars className="w-6 h-6" />
                   Perguntar a inteligência artificial
                 </button>
@@ -308,6 +198,7 @@ export default function Home() {
                 {underMaintenance && <p className="text-center mt-2 text-red-600">Estamos em manutenção, por favor aguarde.</p>}
               </>
             )}
+
             {error && <p className="text-center mt-2 text-red-600 font-bold">{error}</p>}
           </form>
 
@@ -328,36 +219,12 @@ export default function Home() {
                   </button>
                   <Tooltip id="copy" place="right-end" />
                 </span>
-
-                <AceEditor
-                  readOnly
-                  mode="sql"
-                  theme="dracula"
-                  name="schema"
-                  fontSize={15}
-                  height="150px"
-                  className="my-4 h-full max-w-full font-mono bg-blueberry-600 border border-blueberry-300 rounded-md px-4 py-3 transition-all duration-300"
-                  showPrintMargin={true}
-                  wrapEnabled={true}
-                  showGutter={true}
-                  style={{
-                    fontFamily: '"Fira code", "Fira Mono", monospace',
-                  }}
-                  onChange={(schema) => setSchema(schema)}
-                  highlightActiveLine={false}
-                  value={completion}
-                  setOptions={{
-                    enableBasicAutocompletion: false,
-                    enableLiveAutocompletion: false,
-                    enableSnippets: false,
-                    showLineNumbers: true,
-                    tabSize: 2,
-                  }}
-                />
+                <EditorCode name="result" readonly resposta={completion} setSchema={setSchema} />
               </div>
             </>
           )}
         </div>
+
         <p className="text-center text-yellow-50 pb-4">
           Desenvolvido por {''}
           <a
