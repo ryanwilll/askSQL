@@ -53,7 +53,9 @@ function Modal({ isOpen, setIsOpen }: Props) {
 
                   <h6 className="font-bold italic">Correções:</h6>
                   <li>Ajustes para mostrar loading da resposta</li>
-                  <li>Ajustado a cor do texto do input "Selecione seu SGBD"</li>
+                  <li>
+                    Ajustado a cor do texto do input <span className="italic">Selecione seu SGBD</span>
+                  </li>
                 </ul>
               </details>
             </div>

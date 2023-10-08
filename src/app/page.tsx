@@ -70,10 +70,7 @@ export default function Home() {
       return
     }
 
-    console.log(database)
-
     if (!database || database.length <= 0 || !database[0]) {
-      console.log('entrei')
       setError('Você precisa selecionar o tipo do seu SGBD')
       return
     }
