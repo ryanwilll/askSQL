@@ -1,0 +1,28 @@
+const options = [
+  { value: 'Firebird', label: 'Firebird' },
+  { value: 'MySQL', label: 'MySQL' },
+  { value: 'MariaDB', label: 'MariaDB' },
+  { value: 'Oracle', label: 'Oracle' },
+  { value: 'SQL Server', label: 'SQL Server' },
+  { value: 'PostgreSQL', label: 'PostgreSQL' },
+  { value: 'SQLite', label: 'SQLite' },
+  { value: 'MongoDB', label: 'MongoDB' },
+  { value: 'Cassandra', label: 'Cassandra' },
+  { value: 'Redis', label: 'Redis' },
+  { value: 'DB2', label: 'IBM DB2' },
+  { value: 'Sybase', label: 'Sybase' },
+  { value: 'Informix', label: 'IBM Informix' },
+  { value: 'Teradata', label: 'Teradata' },
+  { value: 'InfluxDB', label: 'InfluxDB' },
+  { value: 'Amazon Aurora', label: 'Amazon Aurora' },
+  { value: 'Google Cloud Spanner', label: 'Google Cloud Spanner' },
+  { value: 'Neo4j', label: 'Neo4j' },
+  { value: 'Couchbase', label: 'Couchbase' },
+  { value: 'DynamoDB', label: 'DynamoDB' },
+  { value: 'Firebase Realtime Database', label: 'Firebase Realtime Database' },
+  { value: 'Microsoft Access', label: 'Microsoft Access' },
+  { value: 'Amazon Redshift', label: 'Amazon Redshift' },
+  { value: 'Snowflake', label: 'Snowflake' },
+]
+
+export default options
