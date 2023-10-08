@@ -5,7 +5,7 @@ O objetivo principal deste projeto é simplesmente possibilitar a interação de
 
 Basta apenas informar o Schema da sua tabela / banco de dados e após isso ele poderá realizar as perguntas.
 
-Vale destacar que a aplicação utiliza uma API da OpenIA gratuita, o que pode gerar algumas lentidões.
+Vale destacar que a aplicação utiliza uma API da OpenIA, essa API tem determinado período de uso Free. Quando este período se encerrar é necessário comprar um licença. Neste caso, estou utilizando uma licença paga, então algumas limitações foram inseridas, para evitar que a mesma seja "gasta" de forma desnecessária.
 
 ## Rodando os testes
 
