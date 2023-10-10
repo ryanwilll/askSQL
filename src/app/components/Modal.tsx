@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X } from 'lucide-react'
 
@@ -8,6 +8,12 @@ type Props = {
 }
 
 function Modal({ isOpen, setIsOpen }: Props) {
+
+  useEffect(() => {
+    const body = document.querySelector('body');
+    isOpen ? body!.style.overflow = 'hidden' : body!.style.overflow = 'auto';
+  },[isOpen])
+
   return (
     <>
       {isOpen && (
